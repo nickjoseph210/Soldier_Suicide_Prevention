@@ -49,3 +49,7 @@ df = pd.read_csv(f"https: //docs.google.com/spreadsheets/d/ {sheet_id} / export?
 
 df.head(25)
 ```
+
+All well and good, but I ran into the problem of having multiple sheets of data - multiple tabs - I wanted to explore on the same Google Sheet.  Repeating the code block above does me no good, for all it can do is continue to import the same data as it did the first go-round.
+
+So I had to explore something different, which led me to various suggestions of using the Google Sheets API.  
