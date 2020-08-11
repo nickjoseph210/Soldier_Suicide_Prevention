@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 
+# Google Sheet imports are tagged with the following keyword arguments: sep=None, thousands=",", and engine="python"
+# This was in an effort to import the spreadsheet data without having to go back in and remove / replace commas and spaces
+# with either regex or python commands.
+
 def recent_vha_user():
     """
     Function to import Google Sheet from link into Pandas dataframe
@@ -9,7 +13,7 @@ def recent_vha_user():
     
     sheet3_id = "10DYv7ylkz9_xcitXbSzJiZvUITaz-xH6SOky1CGjshk"
 
-    recent_vha_user_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet3_id}/export?format=csv")
+    recent_vha_user_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet3_id}/export?format=csv", sep=None, thousands=",", engine="python")
 
     pd.set_option("display.max_columns", None)
 
@@ -44,7 +48,7 @@ def by_age_group():
     
     sheet4_id = "11HNhevau7bHyvflftnqxTKzEA2sME60z_1H3zPQHrms"
 
-    by_age_group_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet4_id}/export?format=csv")
+    by_age_group_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet4_id}/export?format=csv", sep=None, thousands=",", engine="python")
 
     pd.set_option("display.max_columns", None)
 
@@ -71,7 +75,7 @@ def non_vha_user():
 
     sheet5_id = "1LAAgkTWJK6yYHq8SbSMHogP7kS_7V-kNlQ-FyoYrRXY"
 
-    non_vha_user_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet5_id}/export?format=csv")
+    non_vha_user_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet5_id}/export?format=csv", sep=None, thousands=",", engine="python")
 
     pd.set_option("display.max_columns", None)
 
@@ -106,7 +110,7 @@ def non_vha_by_age():
     
     sheet6_id = "1KshDEv1WSQmfmwhbIs7az7dzVFczzx1CxEZ5Hx1Rfrg"
 
-    non_vha_by_age_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet6_id}/export?format=csv")
+    non_vha_by_age_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet6_id}/export?format=csv", sep=None, thousands=",", engine="python")
 
     pd.set_option("display.max_columns", None)
 
