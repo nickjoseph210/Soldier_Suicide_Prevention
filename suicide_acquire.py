@@ -139,8 +139,13 @@ def recent_vha_user():
                 "Unnamed: 12": "female_vha_veteran_age_adjusted_per_100K",
             },
         )
+    
+    # drop rows b/c they contain strings that only repeat column names
     recent_vha_user_df = recent_vha_user_df.drop([0, 1, 2, 3])
-
+                        
+    # drop crude_per_100K columns because they aren't specific enough
+    recent_vha_user_df = recent_vha_user_df.drop(["vha_veteran_crude_per_100K", "male_vha_veteran_crude_per_100K", "female_vha_veteran_crude_per_100K"], axis=1)
+    
     print("DataFrame of Suicides Among Recent VHA Users")
 
     return recent_vha_user_df
@@ -153,11 +158,11 @@ def vha_by_age_group():
     
     sheet4_id = "11HNhevau7bHyvflftnqxTKzEA2sME60z_1H3zPQHrms"
 
-    by_age_group_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet4_id}/export?format=csv", sep=None, thousands=",", engine="python")
+    vha_by_age_group_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet4_id}/export?format=csv", sep=None, thousands=",", engine="python")
 
     pd.set_option("display.max_columns", None)
 
-    by_age_group_df = by_age_group_df.rename(
+    vha_by_age_group_df = vha_by_age_group_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
                 "Unnamed: 1": "age_group",
@@ -166,11 +171,15 @@ def vha_by_age_group():
                 "Unnamed: 4": "vha_veteran_crude_per_100K",
             },
         )
-    by_age_group_df = by_age_group_df.drop([0, 1, 2, 3])
+    vha_by_age_group_df = vha_by_age_group_df.drop([0, 1, 2, 3])
+
+    # dropping row where age_group == 'Total'
+
+    vha_by_age_group_df = vha_by_age_group_df.drop(vha_by_age_group_df.index[vha_by_age_group_df.age_group == "Total"])
 
     print("DataFrame of Suicides Among Recent VHA Visits by Age Group")
 
-    return by_age_group_df
+    return vha_by_age_group_df
 
 def non_vha_user():
     """
@@ -203,6 +212,9 @@ def non_vha_user():
         )
     non_vha_user_df = non_vha_user_df.drop([0, 1, 2, 3])
 
+    # drop crude_per_100K columns because they aren't specific enough
+    non_vha_user_df = non_vha_user_df.drop(["non_vha_crude_per_100K", "male_non_vha_crude_per_100K", "female_non_vha_crude_per_100K"], axis=1)
+
     print("DataFrame of Suicides Among Non-Recent VHA Users")
 
     return non_vha_user_df
@@ -229,6 +241,10 @@ def non_vha_by_age():
             },
         )
     non_vha_by_age_df = non_vha_by_age_df.drop([0, 1, 2, 3])
+
+    # dropping row where age_group == 'Total'
+
+    non_vha_by_age_df = non_vha_by_age_df.drop(non_vha_by_age_df.index[non_vha_by_age_df.non_user_age_group == "Total"])
 
     print("DataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
 
