@@ -9,8 +9,8 @@ def age_adjusted():
     """
     Function to import the first of the analyzed DataFrames, the 'age_adjusted' DataFrame
     """
+    
     # original link: https://docs.google.com/spreadsheets/d/18QZWC80YlnF8eMYUugbdtrnzif9fuANos8XZJ_2j27w/edit?usp=sharing
-
     sheet1_id = "18QZWC80YlnF8eMYUugbdtrnzif9fuANos8XZJ_2j27w"
 
     age_adjusted_df= pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet1_id}/export?format=csv", sep=None, thousands=",", engine="python")
@@ -18,7 +18,6 @@ def age_adjusted():
     pd.set_option("display.max_columns", None)
 
     # renaming columns
-
     age_adjusted_df = age_adjusted_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
@@ -37,11 +36,9 @@ def age_adjusted():
             },
         )
     # drop rows:
-
     age_adjusted_df = age_adjusted_df.drop([0, 1, 2, 3])
 
     # drop columns b/c age_adjusted is more applicable than crude rate
-
     age_adjusted_df = age_adjusted_df.drop(["veteran_crude_rate_per_100K", "male_veteran_crude_rate_per_100K", "female_veteran_crude_rate_per_100K"], axis=1)
 
     print("This is the Age-Adjusted Veteran Suicide Rate DF")
@@ -52,7 +49,7 @@ def age_group_df():
     """
     Acquires and preps the second set of data, the 'age_group' DataFrame
     """
-    # https://docs.google.com/spreadsheets/d/14okhBqlMF8MFoaLy0HM9StT_brUx3kUvSXDvCRqcIxM/edit?usp=sharing
+    # original link: https://docs.google.com/spreadsheets/d/14okhBqlMF8MFoaLy0HM9StT_brUx3kUvSXDvCRqcIxM/edit?usp=sharing
 
     sheet2_id = "14okhBqlMF8MFoaLy0HM9StT_brUx3kUvSXDvCRqcIxM"
 
@@ -60,38 +57,33 @@ def age_group_df():
 
     pd.set_option("display.max_columns", None)
 
-    # Renaming Columns
-
+    # renaming columns:
     age_group_df = age_group_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
                 "Unnamed: 1": "age_group",
-                "Unnamed: 2": "veteran_suicide_deaths",
-                "Unnamed: 3": "veteran_population_estimate",
+                "Unnamed: 2": "total_suicides",
+                "Unnamed: 3": "est_total_vet_pop",
                 "Unnamed: 4": "veteran_crude_rate_per_100K",
-                "Unnamed: 5": "male_veteran_suicide_deaths",
-                "Unnamed: 6": "male_veteran_population_estimate",
+                "Unnamed: 5": "male_veteran_suicides",
+                "Unnamed: 6": "est_male_vet_pop",
                 "Unnamed: 7": "male_veteran_crude_rate_per_100K",
                 "Unnamed: 8": "age_group_2",
-                "Unnamed: 9": "female_veteran_suicide_deaths",
-                "Unnamed: 10": "female_veteran_population_estimate",
+                "Unnamed: 9": "female_veteran_suicides",
+                "Unnamed: 10": "est_female_vet_pop",
             },
         )
 
-    # Dropping Rows
-
+    # dropping rows
     age_group_df = age_group_df.drop([0, 1, 2, 3])
 
     # dropping row where age_group == 'Total'
-
     age_group_df = age_group_df.drop(age_group_df.index[age_group_df.age_group == "Total"])
 
     # dropping 'age_group_2' column, as it is the same as 'age_group'
-
     age_group_df = age_group_df.drop(["age_group_2"], axis=1)
 
     # Adding column to enumerate age groups for exploration
-
     age_group_num = [] 
     for i in age_group_df["age_group"]: 
         if i == "18-34": 
@@ -105,6 +97,9 @@ def age_group_df():
        
     age_group_df["age_group_num"] = age_group_num
 
+    # imputing '1' where values are '.' so I can convert dtypes to floats and int64's
+    age_group_df["female_veteran_suicides"] = age_group_df["female_veteran_suicides"].replace(".", "1")
+    age_group_df["est_female_vet_pop"] = age_group_df["est_female_vet_pop"].replace(".", "1")
 
     print("This is the AgeGroup DataFrame")
 
@@ -122,6 +117,7 @@ def recent_vha_user():
 
     pd.set_option("display.max_columns", None)
 
+    # renaming columns:
     recent_vha_user_df = recent_vha_user_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
@@ -145,6 +141,9 @@ def recent_vha_user():
                         
     # drop crude_per_100K columns because they aren't specific enough
     recent_vha_user_df = recent_vha_user_df.drop(["vha_veteran_crude_per_100K", "male_vha_veteran_crude_per_100K", "female_vha_veteran_crude_per_100K"], axis=1)
+
+    # change column datatypes from 'object' to int64's and floats
+    recent_vha_user_df = recent_vha_user_df.apply(pd.to_numeric)
     
     print("DataFrame of Suicides Among Recent VHA Users")
 
@@ -162,10 +161,11 @@ def vha_by_age_group():
 
     pd.set_option("display.max_columns", None)
 
+    # renaming columns:
     vha_by_age_group_df = vha_by_age_group_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
-                "Unnamed: 1": "age_group",
+                "Unnamed: 1": "vha_age_group",
                 "Unnamed: 2": "vha_veteran_suicides",
                 "Unnamed: 3": "vha_veteran_pop_est",
                 "Unnamed: 4": "vha_veteran_crude_per_100K",
@@ -173,9 +173,28 @@ def vha_by_age_group():
         )
     vha_by_age_group_df = vha_by_age_group_df.drop([0, 1, 2, 3])
 
-    # dropping row where age_group == 'Total'
+    # dropping row where vha_age_group == 'Total'
+    vha_by_age_group_df = vha_by_age_group_df.drop(vha_by_age_group_df.index[vha_by_age_group_df.vha_age_group == "Total"])
 
-    vha_by_age_group_df = vha_by_age_group_df.drop(vha_by_age_group_df.index[vha_by_age_group_df.age_group == "Total"])
+    # assigning group numbers to age groups to get rid of the '-' symbol that keeps me from converting dtypes
+    age_group_num = [] 
+    for i in vha_by_age_group_df["vha_age_group"]: 
+        if i == "18-34": 
+            age_group_num.append(1) 
+        elif i == "35-54": 
+            age_group_num.append(2) 
+        elif i == "55-74":  
+            age_group_num.append(3) 
+        elif i == "75+":
+            age_group_num.append(4)
+       
+    vha_by_age_group_df["vha_age_group_num"] = age_group_num
+
+    # now that the group numbers are assigned, I can drop the 'age_group' column:
+    vha_by_age_group_df = vha_by_age_group_df.drop(["vha_age_group"], axis=1)
+
+    # converting dtypes from 'object' to int64s and floats:
+    vha_by_age_group_df = vha_by_age_group_df.apply(pd.to_numeric)
 
     print("DataFrame of Suicides Among Recent VHA Visits by Age Group")
 
@@ -193,6 +212,7 @@ def non_vha_user():
 
     pd.set_option("display.max_columns", None)
 
+    # renaming columns:
     non_vha_user_df = non_vha_user_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
@@ -212,8 +232,11 @@ def non_vha_user():
         )
     non_vha_user_df = non_vha_user_df.drop([0, 1, 2, 3])
 
-    # drop crude_per_100K columns because they aren't specific enough
+    # drop crude_per_100K columns because they aren't specific enough:
     non_vha_user_df = non_vha_user_df.drop(["non_vha_crude_per_100K", "male_non_vha_crude_per_100K", "female_non_vha_crude_per_100K"], axis=1)
+
+    # convert 'object' dtypes to int64s and floats:
+    non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
 
     print("DataFrame of Suicides Among Non-Recent VHA Users")
 
@@ -231,6 +254,7 @@ def non_vha_by_age():
 
     pd.set_option("display.max_columns", None)
 
+    # renaming columns:
     non_vha_by_age_df = non_vha_by_age_df.rename(
             columns={
                 "2005-2017 National Suicide Data Appendix": "year_of_death",
@@ -243,20 +267,28 @@ def non_vha_by_age():
     non_vha_by_age_df = non_vha_by_age_df.drop([0, 1, 2, 3])
 
     # dropping row where age_group == 'Total'
-
     non_vha_by_age_df = non_vha_by_age_df.drop(non_vha_by_age_df.index[non_vha_by_age_df.non_user_age_group == "Total"])
+
+    # assigning group numbers to age groups to get rid of the '-' symbol that keeps me from converting dtypes
+    age_group_num = [] 
+    for i in non_vha_by_age_df["non_user_age_group"]: 
+        if i == "18-34": 
+            age_group_num.append(1) 
+        elif i == "35-54": 
+            age_group_num.append(2) 
+        elif i == "55-74":  
+            age_group_num.append(3) 
+        elif i == "75+":
+            age_group_num.append(4)
+       
+    non_vha_by_age_df["age_group_num"] = age_group_num
+
+    # now that the group numbers are assigned, I can drop the 'age_group' column:
+    non_vha_by_age_df = non_vha_by_age_df.drop(["non_user_age_group"], axis=1)
+
+    # convert dtypes from 'object' to int64s and floats: 
+    non_vha_by_age_df = non_vha_by_age_df.apply(pd.to_numeric)
 
     print("DataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
 
     return non_vha_by_age_df
-
-
-# sheet2_id = "14okhBqlMF8MFoaLy0HM9StT_brUx3kUvSXDvCRqcIxM"
-
-# age_group_df= pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet2_id}/export?format=csv")
-
-# pd.set_option("display.max_columns", None)
-
-# print("This is the AgeGroup DataFrame")
-
-# age_group_df
