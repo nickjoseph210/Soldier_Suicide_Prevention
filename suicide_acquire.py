@@ -1,9 +1,16 @@
 import pandas as pd
 import numpy as np
 
+import sklearn.preprocessing
+import sklearn.model_selection
+import sklearn.impute
+from sklearn.model_selection import train_test_split
+
 # Google Sheet imports are tagged with the following keyword arguments: sep=None, thousands=",", and engine="python"
 # This was in an effort to import the spreadsheet data without having to go back in and remove / replace commas and spaces
 # with either regex or python commands.
+
+# -------------- Age-Adjusted_DataFrame ----------------
 
 def age_adjusted():
     """
@@ -41,9 +48,20 @@ def age_adjusted():
     # drop columns b/c age_adjusted is more applicable than crude rate
     age_adjusted_df = age_adjusted_df.drop(["veteran_crude_rate_per_100K", "male_veteran_crude_rate_per_100K", "female_veteran_crude_rate_per_100K"], axis=1)
 
-    print("This is the Age-Adjusted Veteran Suicide Rate DF")
+    # change column datatypes from 'object' to int64's and floats
+    age_adjusted_df = age_adjusted_df.apply(pd.to_numeric)
+
+    # splitting data into train and test
+    # train, test = train_test_split(age_adjusted_df, train_size=.75, random_state=123)
+
+    # output
+    print("Age-Adjusted Veteran Suicide Rate DF")
+    print(f"Consists of {len(age_adjusted_df)} rows and {len(age_adjusted_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return age_adjusted_df
+
+# -------------- Age Group DataFrame ----------------
 
 def age_group_df():
     """
@@ -83,7 +101,7 @@ def age_group_df():
     # dropping 'age_group_2' column, as it is the same as 'age_group'
     age_group_df = age_group_df.drop(["age_group_2"], axis=1)
 
-    # Adding column to enumerate age groups for exploration
+    # adding column to enumerate age groups for exploration
     age_group_num = [] 
     for i in age_group_df["age_group"]: 
         if i == "18-34": 
@@ -101,9 +119,17 @@ def age_group_df():
     age_group_df["female_veteran_suicides"] = age_group_df["female_veteran_suicides"].replace(".", "1")
     age_group_df["est_female_vet_pop"] = age_group_df["est_female_vet_pop"].replace(".", "1")
 
+    # splitting data into train and test
+    #train, test = train_test_split(age_group_df, train_size=.75, random_state=123)
+
+    # output
     print("This is the AgeGroup DataFrame")
+    print(f"Consists of {len(age_group_df)} rows and {len(age_group_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return age_group_df
+
+# -------------- Recent VHA User DataFrame ----------------
 
 def recent_vha_user():
     """
@@ -144,10 +170,18 @@ def recent_vha_user():
 
     # change column datatypes from 'object' to int64's and floats
     recent_vha_user_df = recent_vha_user_df.apply(pd.to_numeric)
-    
+
+    # splitting data into train and test
+    # train, test = train_test_split(recent_vha_user_df, train_size=.75, random_state=123)
+
+    # output
     print("DataFrame of Suicides Among Recent VHA Users")
+    print(f"Consists of {len(recent_vha_user_df)} rows and {len(recent_vha_user_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return recent_vha_user_df
+
+# -------------- VHA By Age Group DataFrame ----------------
 
 def vha_by_age_group():
     """
@@ -196,9 +230,17 @@ def vha_by_age_group():
     # converting dtypes from 'object' to int64s and floats:
     vha_by_age_group_df = vha_by_age_group_df.apply(pd.to_numeric)
 
+    # splitting data into train and test
+    # train, test = train_test_split(vha_by_age_group_df, train_size=.75, random_state=123)
+
+    # output
     print("DataFrame of Suicides Among Recent VHA Visits by Age Group")
+    print(f"Consists of {len(vha_by_age_group_df)} rows and {len(vha_by_age_group_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return vha_by_age_group_df
+
+# -------------- Non-VHA User DataFrame ----------------
 
 def non_vha_user():
     """
@@ -236,11 +278,16 @@ def non_vha_user():
     non_vha_user_df = non_vha_user_df.drop(["non_vha_crude_per_100K", "male_non_vha_crude_per_100K", "female_non_vha_crude_per_100K"], axis=1)
 
     # convert 'object' dtypes to int64s and floats:
-    non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
+    # non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
 
+    # output
     print("DataFrame of Suicides Among Non-Recent VHA Users")
+    print(f"Consists of {len(non_vha_user_df)} rows and {len(non_vha_user_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return non_vha_user_df
+
+# -------------- Non-VHA By Age DataFrame ----------------
 
 def non_vha_by_age():
     """
@@ -289,6 +336,22 @@ def non_vha_by_age():
     # convert dtypes from 'object' to int64s and floats: 
     non_vha_by_age_df = non_vha_by_age_df.apply(pd.to_numeric)
 
+    # splitting data into train and test
+    # train, test = train_test_split(non_vha_by_age_df, train_size=.75, random_state=123)
+
+    #output
     print("DataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
+    print(f"Consists of {len(non_vha_by_age_df)} rows and {len(non_vha_by_age_df.columns)} columns")
+    # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
     return non_vha_by_age_df
+
+def split_dataframes():
+    """Simple loop function to split all the dataframes into train, validate, and test sets"""
+    dataframes = age_adjusted_df, age_group_df, recent_vha_user_df, vha_by_age_group, non_vha_user, non_vha_by_age_df
+
+    for data in dataframes:
+        data_train, data_test = sklearn.model_selection.train_test_split(data_df, train_size=.80, random_state=123)
+        data_train, data_validate = sklearn.model_selection.train_test_split(data_train, train_size=.80, random_state=123)
+    
+    return dataframe
