@@ -27,19 +27,19 @@ def age_adjusted():
     # renaming columns
     age_adjusted_df = age_adjusted_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
-                "Unnamed: 1": "veteran_suicide_deaths",
-                "Unnamed: 2": "veteran_population_estimate",
+                "2005-2017 National Suicide Data Appendix": "year",
+                "Unnamed: 1": "total_vet_suicides",
+                "Unnamed: 2": "est_total_vet_pop",
                 "Unnamed: 3": "veteran_crude_rate_per_100K",
-                "Unnamed: 4": "veteran_age_adjusted_rate_per_100K",
-                "Unnamed: 5": "male_veteran_suicide_deaths",
-                "Unnamed: 6": "male_veteran_population_estimate",
+                "Unnamed: 4": "age_adjusted_rate_per_100K",
+                "Unnamed: 5": "male_suicides",
+                "Unnamed: 6": "est_male_vet_pop",
                 "Unnamed: 7": "male_veteran_crude_rate_per_100K",
-                "Unnamed: 8": "male_veteran_age_adjusted_rate_per_100K",
-                "Unnamed: 9": "female_veteran_suicide_deaths",
-                "Unnamed: 10": "female_veteran_population_estimate",
+                "Unnamed: 8": "male_age_adjusted_rate_per_100K",
+                "Unnamed: 9": "female_suicides",
+                "Unnamed: 10": "est_female_vet_pop",
                 "Unnamed: 11": "female_veteran_crude_rate_per_100K", 
-                "Unnamed: 12": "female_veteran_age_adjusted_rate_per_100K",
+                "Unnamed: 12": "female_age_adjusted_rate_per_100K",
             },
         )
     # drop rows:
@@ -50,6 +50,9 @@ def age_adjusted():
 
     # change column datatypes from 'object' to int64's and floats
     age_adjusted_df = age_adjusted_df.apply(pd.to_numeric)
+
+    # set index to the year
+    # age_adjusted_df = age_adjusted_df.set_index("year")
 
     # splitting data into train and test
     # train, test = train_test_split(age_adjusted_df, train_size=.75, random_state=123)
@@ -78,16 +81,16 @@ def age_group_df():
     # renaming columns:
     age_group_df = age_group_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
+                "2005-2017 National Suicide Data Appendix": "year",
                 "Unnamed: 1": "age_group",
                 "Unnamed: 2": "total_suicides",
                 "Unnamed: 3": "est_total_vet_pop",
                 "Unnamed: 4": "veteran_crude_rate_per_100K",
-                "Unnamed: 5": "male_veteran_suicides",
+                "Unnamed: 5": "male_suicides",
                 "Unnamed: 6": "est_male_vet_pop",
                 "Unnamed: 7": "male_veteran_crude_rate_per_100K",
                 "Unnamed: 8": "age_group_2",
-                "Unnamed: 9": "female_veteran_suicides",
+                "Unnamed: 9": "female_suicides",
                 "Unnamed: 10": "est_female_vet_pop",
             },
         )
@@ -116,8 +119,12 @@ def age_group_df():
     age_group_df["age_group_num"] = age_group_num
 
     # imputing '1' where values are '.' so I can convert dtypes to floats and int64's
-    age_group_df["female_veteran_suicides"] = age_group_df["female_veteran_suicides"].replace(".", "1")
+    age_group_df["female_suicides"] = age_group_df["female_suicides"].replace(".", "1")
     age_group_df["est_female_vet_pop"] = age_group_df["est_female_vet_pop"].replace(".", "1")
+
+    # set index to the year
+    # age_group_df = age_group_df.set_index("year", inplace=True)
+
 
     # splitting data into train and test
     #train, test = train_test_split(age_group_df, train_size=.75, random_state=123)
@@ -146,19 +153,19 @@ def recent_vha_user():
     # renaming columns:
     recent_vha_user_df = recent_vha_user_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
-                "Unnamed: 1": "vha_veteran_suicides",
-                "Unnamed: 2": "vha_veteran_pop_est",
+                "2005-2017 National Suicide Data Appendix": "year",
+                "Unnamed: 1": "vha_suicides",
+                "Unnamed: 2": "vha_pop_est",
                 "Unnamed: 3": "vha_veteran_crude_per_100K",
-                "Unnamed: 4": "vha_veteran_age_adjusted_per_100K",
-                "Unnamed: 5": "male_vha_veteran_suicides",
-                "Unnamed: 6": "male_vha_veteran_pop_est",
+                "Unnamed: 4": "vha_age_adjusted_per_100K",
+                "Unnamed: 5": "male_suicides",
+                "Unnamed: 6": "male_vha_pop_est",
                 "Unnamed: 7": "male_vha_veteran_crude_per_100K",
-                "Unnamed: 8": "male_vha_veteran_age_adjusted_per_100K",
-                "Unnamed: 9": "female_vha_veteran_suicides",
-                "Unnamed: 10": "female_vha_veteran_pop_est",
+                "Unnamed: 8": "male_vha_age_adjusted_per_100K",
+                "Unnamed: 9": "female_suicides",
+                "Unnamed: 10": "female_vha_pop_est",
                 "Unnamed: 11": "female_vha_veteran_crude_per_100K", 
-                "Unnamed: 12": "female_vha_veteran_age_adjusted_per_100K",
+                "Unnamed: 12": "female_vha_age_adjusted_per_100K",
             },
         )
     
@@ -167,6 +174,10 @@ def recent_vha_user():
                         
     # drop crude_per_100K columns because they aren't specific enough
     recent_vha_user_df = recent_vha_user_df.drop(["vha_veteran_crude_per_100K", "male_vha_veteran_crude_per_100K", "female_vha_veteran_crude_per_100K"], axis=1)
+
+    # set index to the year
+    # recent_vha_user_df = recent_vha_user_df.set_index("year", inplace=True)
+
 
     # change column datatypes from 'object' to int64's and floats
     recent_vha_user_df = recent_vha_user_df.apply(pd.to_numeric)
@@ -198,10 +209,10 @@ def vha_by_age_group():
     # renaming columns:
     vha_by_age_group_df = vha_by_age_group_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
+                "2005-2017 National Suicide Data Appendix": "year",
                 "Unnamed: 1": "vha_age_group",
-                "Unnamed: 2": "vha_veteran_suicides",
-                "Unnamed: 3": "vha_veteran_pop_est",
+                "Unnamed: 2": "vha_suicides",
+                "Unnamed: 3": "vha_pop_est",
                 "Unnamed: 4": "vha_veteran_crude_per_100K",
             },
         )
@@ -233,6 +244,9 @@ def vha_by_age_group():
     # splitting data into train and test
     # train, test = train_test_split(vha_by_age_group_df, train_size=.75, random_state=123)
 
+    # set index to the year
+    # vha_by_age_group_df = vha_by_age_group_df.set_index("year", inplace=True)
+
     # output
     print("DataFrame of Suicides Among Recent VHA Visits by Age Group")
     print(f"Consists of {len(vha_by_age_group_df)} rows and {len(vha_by_age_group_df.columns)} columns")
@@ -257,7 +271,7 @@ def non_vha_user():
     # renaming columns:
     non_vha_user_df = non_vha_user_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
+                "2005-2017 National Suicide Data Appendix": "year",
                 "Unnamed: 1": "non_vha_veteran_suicides",
                 "Unnamed: 2": "est_non_vha_pop",
                 "Unnamed: 3": "non_vha_crude_per_100K",
@@ -279,6 +293,9 @@ def non_vha_user():
 
     # convert 'object' dtypes to int64s and floats:
     # non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
+
+    # set index to the year
+    # non_vha_user_df = non_vha_user_df.set_index("year", inplace=True)
 
     # output
     print("DataFrame of Suicides Among Non-Recent VHA Users")
@@ -304,7 +321,7 @@ def non_vha_by_age():
     # renaming columns:
     non_vha_by_age_df = non_vha_by_age_df.rename(
             columns={
-                "2005-2017 National Suicide Data Appendix": "year_of_death",
+                "2005-2017 National Suicide Data Appendix": "year",
                 "Unnamed: 1": "non_user_age_group",
                 "Unnamed: 2": "non_vha_veteran_suicides",
                 "Unnamed: 3": "non_vha_veteran_pop_est",
@@ -339,6 +356,9 @@ def non_vha_by_age():
     # splitting data into train and test
     # train, test = train_test_split(non_vha_by_age_df, train_size=.75, random_state=123)
 
+    # set index to the year
+    # on_vha_by_age_df = non_vha_by_age_df.set_index("year", inplace=True)
+
     #output
     print("DataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
     print(f"Consists of {len(non_vha_by_age_df)} rows and {len(non_vha_by_age_df.columns)} columns")
@@ -346,12 +366,12 @@ def non_vha_by_age():
 
     return non_vha_by_age_df
 
-def split_dataframes():
-    """Simple loop function to split all the dataframes into train, validate, and test sets"""
-    dataframes = age_adjusted_df, age_group_df, recent_vha_user_df, vha_by_age_group, non_vha_user, non_vha_by_age_df
+# def split_dataframes():
+#     """Simple loop function to split all the dataframes into train, validate, and test sets"""
+#     dataframes = age_adjusted_df, age_group_df, recent_vha_user_df, vha_by_age_group, non_vha_user, non_vha_by_age_df
 
-    for data in dataframes:
-        data_train, data_test = sklearn.model_selection.train_test_split(data_df, train_size=.80, random_state=123)
-        data_train, data_validate = sklearn.model_selection.train_test_split(data_train, train_size=.80, random_state=123)
+#     for data in dataframes:
+#         data_train, data_test = sklearn.model_selection.train_test_split(data_df, train_size=.80, random_state=123)
+#         data_train, data_validate = sklearn.model_selection.train_test_split(data_train, train_size=.80, random_state=123)
     
-    return dataframe
+#     return dataframe
