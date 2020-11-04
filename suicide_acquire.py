@@ -58,7 +58,7 @@ def age_adjusted():
     # train, test = train_test_split(age_adjusted_df, train_size=.75, random_state=123)
 
     # output
-    print("Age-Adjusted Veteran Suicide Rate DF")
+    print("\nAge-Adjusted Veteran Suicide Rate DF")
     print(f"Consists of {len(age_adjusted_df)} rows and {len(age_adjusted_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
@@ -118,9 +118,15 @@ def age_group_df():
        
     age_group_df["age_group_num"] = age_group_num
 
+    # dropping 'age_group' column, as we've established age group numbers to facilitate datatypes
+    age_group_df = age_group_df.drop(["age_group"], axis=1)
+
     # imputing '1' where values are '.' so I can convert dtypes to floats and int64's
     age_group_df["female_suicides"] = age_group_df["female_suicides"].replace(".", "1")
     age_group_df["est_female_vet_pop"] = age_group_df["est_female_vet_pop"].replace(".", "1")
+
+    # convert all datatypes to floats / int64s for easier visualizations
+    age_group_df = age_group_df.apply(pd.to_numeric, errors='coerce')
 
     # set index to the year
     # age_group_df = age_group_df.set_index("year", inplace=True)
@@ -130,7 +136,7 @@ def age_group_df():
     #train, test = train_test_split(age_group_df, train_size=.75, random_state=123)
 
     # output
-    print("This is the AgeGroup DataFrame")
+    print("\nThis is the AgeGroup DataFrame")
     print(f"Consists of {len(age_group_df)} rows and {len(age_group_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
@@ -186,7 +192,7 @@ def recent_vha_user():
     # train, test = train_test_split(recent_vha_user_df, train_size=.75, random_state=123)
 
     # output
-    print("DataFrame of Suicides Among Recent VHA Users")
+    print("\nDataFrame of Suicides Among Recent VHA Users")
     print(f"Consists of {len(recent_vha_user_df)} rows and {len(recent_vha_user_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
@@ -248,7 +254,7 @@ def vha_by_age_group():
     # vha_by_age_group_df = vha_by_age_group_df.set_index("year", inplace=True)
 
     # output
-    print("DataFrame of Suicides Among Recent VHA Visits by Age Group")
+    print("\nDataFrame of Suicides Among Recent VHA Visits by Age Group")
     print(f"Consists of {len(vha_by_age_group_df)} rows and {len(vha_by_age_group_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
@@ -291,14 +297,14 @@ def non_vha_user():
     # drop crude_per_100K columns because they aren't specific enough:
     non_vha_user_df = non_vha_user_df.drop(["non_vha_crude_per_100K", "male_non_vha_crude_per_100K", "female_non_vha_crude_per_100K"], axis=1)
 
-    # convert 'object' dtypes to int64s and floats:
-    # non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
+    #convert 'object' dtypes to int64s and floats:
+    non_vha_user_df = non_vha_user_df.apply(pd.to_numeric)
 
     # set index to the year
     # non_vha_user_df = non_vha_user_df.set_index("year", inplace=True)
 
     # output
-    print("DataFrame of Suicides Among Non-Recent VHA Users")
+    print("\nDataFrame of Suicides Among Non-Recent VHA Users")
     print(f"Consists of {len(non_vha_user_df)} rows and {len(non_vha_user_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
@@ -360,7 +366,7 @@ def non_vha_by_age():
     # on_vha_by_age_df = non_vha_by_age_df.set_index("year", inplace=True)
 
     #output
-    print("DataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
+    print("\nDataFrame of Suicides Among Those Who Had NOT Recently Visited the VHA")
     print(f"Consists of {len(non_vha_by_age_df)} rows and {len(non_vha_by_age_df.columns)} columns")
     # print("Data has been split into Test and Train portions in separate .py file for exploration.")
 
