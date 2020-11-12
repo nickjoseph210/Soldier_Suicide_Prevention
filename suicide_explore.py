@@ -21,16 +21,16 @@ def data_split(df):
     train, validate = sklearn.model_selection.train_test_split(train, train_size=.80, random_state=123)
 
     # printout to verify split has occured
-    for data in df:
-        print(f"Trained df has {len(train)} rows and {len(train.columns)} columns" )
-        print(f"Validated df has {len(validate)} rows and {len(validate.columns)} columns")
-    # # print trained dataframe
-    # print(f"Trained {df} DataFrame")
-    # print(f"Consists of {len(train)} rows and {len(train.columns)} columns")
+    # for data in df:
+    #     print(f"Trained df has {len(train)} rows and {len(train.columns)} columns" )
+    #     print(f"Validated df has {len(validate)} rows and {len(validate.columns)} columns")
+    # print trained dataframe
+    print(f"Trained {df} DataFrame")
+    print(f"Consists of {len(train)} rows and {len(train.columns)} columns")
 
-    # # print validated dataframe
-    # print(f"Validated {df} DataFrame")
-    # print(f"Consists of {len(validate)} rows and {len(validate.columns)} columns")
+    # print validated dataframe
+    print(f"Validated {df} DataFrame")
+    print(f"Consists of {len(validate)} rows and {len(validate.columns)} columns")
 
     return df
 
